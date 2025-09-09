@@ -1,4 +1,4 @@
-const pool = require('./your-mysql-pool'); // Replace with your MySQL pool configuration
+const pool = require('../utils/db'); // Replace with your MySQL pool configuration
 
 class BaseSQLModel {
   constructor(tableName) {
