@@ -10,8 +10,8 @@ class AuthorModel extends baseSQLModel {
     return authors;
   }
 
-  async findOne(id) {
-    const author = await super.findOne('id', id);
+  async findById(id) {
+    const author = await super.findById(id);
     return author;
   }
 
