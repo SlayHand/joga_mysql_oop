@@ -53,6 +53,37 @@ class userController {
       return res.status(500).json({ message: 'Internal error', error: String(err) });
     }
   }
+  async login(req, res) {
+  try {
+    const username = (req.body.username || '').trim();
+    const password = req.body.password || '';
+
+    if (!username || !password) {
+      return res.status(400).json({ message: 'username ja password on kohustuslikud' });
+    }
+
+    const user = await userModel.findByUsername(username);
+    if (!user) {
+      return res.status(404).json({ message: 'Kasutajat ei leitud' });
+    }
+
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) {
+      return res.status(401).json({ message: 'Vale parool' });
+    }
+
+    req.session.user = { username: user.username, user_id: user.id };
+
+    return res.status(200).json({
+      message: 'Login õnnestus',
+      user_session: req.session.user,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Internal error', error: String(err) });
+  }
+}
+
 }
 
 module.exports = new userController();
