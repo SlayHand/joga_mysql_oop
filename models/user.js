@@ -11,6 +11,10 @@ class userDBModel extends baseSQLModel {
     );
     return rows[0] || null;
     }
+
+    async setRoleById(userId, role){
+        return this.update(userId, { role });
+    }
 }
 
 module.exports = userDBModel;

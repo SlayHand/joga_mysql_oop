@@ -32,6 +32,7 @@ class userController {
         username,
         email,
         password: cryptPassword,
+        role: 'user',
       });
 
       if (!registeredId) {
@@ -39,7 +40,7 @@ class userController {
       }
 
       const userData = await userModel.findById(registeredId);
-      req.session.user = { username: userData.username, user_id: userData.id };
+      req.session.user = { username: userData.username, user_id: userData.id, role: userData.role };
 
       return res.status(201).json({
         message: 'New user is registered',
@@ -72,7 +73,7 @@ class userController {
       return res.status(401).json({ message: 'Vale parool' });
     }
 
-    req.session.user = { username: user.username, user_id: user.id };
+    req.session.user = { username: user.username, user_id: user.id, role: user.role };
 
     return res.status(200).json({
       message: 'Login õnnestus',
@@ -83,6 +84,30 @@ class userController {
     return res.status(500).json({ message: 'Internal error', error: String(err) });
   }
 }
+  async changeRole(req, res) {
+    try {
+      const targetId = Number(req.params.id);
+      const { role } = req.body;
+
+      if (!req.session.user) return res.status(401).json({ message: 'Pole sisse logitud' });
+      if (req.session.user.role !== 'admin') return res.status(403).json({ message: 'Keelatud' });
+
+      if (!Number.isInteger(targetId) || targetId <= 0) {
+        return res.status(400).json({ message: 'Vale kasutaja ID' });
+      }
+      if (!['user','admin'].includes(role)) {
+        return res.status(400).json({ message: 'Lubatud rollid: user, admin' });
+      }
+
+      const affected = await userModel.setRoleById(targetId, role);
+      if (affected === 0) return res.status(404).json({ message: `Kasutajat ${targetId} ei leitud` });
+
+      return res.status(200).json({ message: `Määrati roll "${role}" kasutajale ${targetId}` });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Internal error', error: String(err) });
+    }
+  }
 
 }
 
