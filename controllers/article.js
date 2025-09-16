@@ -3,7 +3,7 @@ const articleModel = new articleDbModel();
 
 class articleController {
     constructor() {
-        const articles = [];
+        this.articles = [];
     } 
 
     async getAllArticles(req, res) {
@@ -29,7 +29,21 @@ class articleController {
            message: `created article with id ${articleId}`,
            article: {id: articleId, ...newArticle}
         })
-}
+    }
+    async updateArticle(req, res) {
+        const updatedArticle = {
+            name: req.body.name,
+            slug: req.body.slug,
+            image: req.body.image,
+            body: req.body.body,
+            author_id: req.body.author_id
+        };
+        await articleModel.update(req.params.id, updatedArticle);
+        res.status(201).json({
+           message: `updated article with id ${req.params.id}`,
+           article: {id: req.params.id, ...updatedArticle}
+        })
+    }
 }
 
 module.exports = articleController;
