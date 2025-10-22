@@ -1,0 +1,24 @@
+<h1>Lisa artikkel</h1>
+<form action="/article/create" method="POST" class="form">
+  <div class="field">
+    <label for="name">Pealkiri</label>
+    <input id="name" name="name" required />
+  </div>
+  <div class="field">
+    <label for="slug">Slug</label>
+    <input id="slug" name="slug" required />
+  </div>
+  <div class="field">
+    <label for="image">Pildi URL</label>
+    <input id="image" name="image" />
+  </div>
+  <div class="field">
+    <label for="body">Sisu</label>
+    <textarea id="body" name="body" rows="10" required></textarea>
+  </div>
+  <div class="field">
+    <label for="author_id">Autor ID</label>
+    <input id="author_id" name="author_id" type="number" min="1" />
+  </div>
+  <button type="submit">Salvesta</button>
+</form>

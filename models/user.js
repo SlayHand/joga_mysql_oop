@@ -1,20 +1,20 @@
-const baseSQLModel = require('./base');
+const baseSQLModel = require("./base");
 
 class userDBModel extends baseSQLModel {
-    constructor(){
-        super('users');
-    }
-    async findByUsername(username){
+  constructor() {
+    super("users");
+  }
+  async findByUsername(username) {
     const rows = await this.executeQuery(
-        `SELECT * FROM ${this.tableName} WHERE username = ? LIMIT 1`,
-        [username]
+      `SELECT * FROM ${this.tableName} WHERE username = ? LIMIT 1`,
+      [username]
     );
     return rows[0] || null;
-    }
+  }
 
-    async setRoleById(userId, role){
-        return this.update(userId, { role });
-    }
+  async setRoleById(userId, role) {
+    return this.update(userId, { role });
+  }
 }
 
 module.exports = userDBModel;

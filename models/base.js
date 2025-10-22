@@ -1,4 +1,4 @@
-const pool = require('../utils/db'); // Replace with your MySQL pool configuration
+const pool = require("../utils/db");
 
 class BaseSQLModel {
   constructor(tableName) {
@@ -8,37 +8,32 @@ class BaseSQLModel {
   executeQuery(query, params) {
     return new Promise((resolve, reject) => {
       pool.query(query, params, (error, results) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(results);
-        }
+        if (error) return reject(error);
+        resolve(results);
       });
     });
   }
 
   async findAll() {
     const query = `SELECT * FROM ${this.tableName}`;
-    const results = await this.executeQuery(query);
-    return results;
+    return this.executeQuery(query);
   }
 
   async findById(id) {
     const query = `SELECT * FROM ${this.tableName} WHERE id = ?`;
-    const results = await this.executeQuery(query, [id]);
-    return results[0];
+    const rows = await this.executeQuery(query, [id]);
+    return rows[0] || null;
   }
 
-  async findOne(where, value){
-    const query = `SELECT * FROM ${this.tableName} WHERE ${where} = "${value}"`;
-    const results = await this.executeQuery(query, [where, value]);
-    return results[0]; 
+  async findOne(where, value) {
+    const query = `SELECT * FROM ${this.tableName} WHERE ${where} = ? LIMIT 1`;
+    const rows = await this.executeQuery(query, [value]);
+    return rows[0] || null;
   }
 
-  async findMany(where, value){
-    const query = `SELECT * FROM ${this.tableName} WHERE ${where} = "${value}"`;
-    const results = await this.executeQuery(query, [where, value]);
-    return results;
+  async findMany(where, value) {
+    const query = `SELECT * FROM ${this.tableName} WHERE ${where} = ?`;
+    return this.executeQuery(query, [value]);
   }
 
   async create(data) {
